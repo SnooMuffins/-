@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Access</title>
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        font-family: "Courier New", monospace;
+        color: #00ffe6;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 2;
+    }
+
+    .hint {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        font-style: italic;
+        color: #66fff2;
+        text-shadow: 0 0 8px #66fff2;
+    }
+
+    .password-label {
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px #00ffe6;
+    }
+
+    input {
+        background: transparent;
+        border: 1px solid #00ffe6;
+        padding: 10px;
+        color: #00ffe6;
+        outline: none;
+        text-align: center;
+        width: 220px;
+        box-shadow: 0 0 10px #00ffe6;
+        font-family: "Courier New", monospace;
+    }
+
+    .hidden { display: none; }
+
+    /* SHAKE */
+    @keyframes shake {
+        0% { transform: translate(-50%, -50%) translateX(0); }
+        25% { transform: translate(-50%, -50%) translateX(-5px); }
+        50% { transform: translate(-50%, -50%) translateX(5px); }
+        75% { transform: translate(-50%, -50%) translateX(-5px); }
+        100% { transform: translate(-50%, -50%) translateX(0); }
+    }
+
+    .shake {
+        animation: shake 0.3s;
+    }
+
+    /* FLASH */
+    .flash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .flash.active {
+        animation: flash 0.2s;
+    }
+
+    @keyframes flash {
+        0% { opacity: 0.8; }
+        100% { opacity: 0; }
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+<div class="flash" id="flash"></div>
+
+<!-- SCREEN 1 -->
+<div class="container" id="screen1">
+    <div class="hint">Hint: (Who is the goddess of ice?</div>
+    <div class="password-label">Password:</div>
+    <input type="password" id="pass1">
+</div>
+
+<!-- SCREEN 2 -->
+<div class="container hidden" id="screen2">
+    <div class="hint">Zkdw lv wkh qdph ri wkh jluo L wrrn lq?</div>
+    <div class="password-label">Password:</div>
+    <input type="password" id="pass2">
+</div>
+
+<!-- SCREEN 3 -->
+<div class="container hidden" id="screen3">
+    <div class="hint">https://www.instagram.com/moomoofamm/</div>
+    <div class="password-label">Password:</div>
+    <input type="password" id="pass3">
+</div>
+
+<script>
+
+/* MATRIX RAIN */
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const fontSize = 16;
+const columns = Math.floor(canvas.width / fontSize);
+
+const drops = Array(columns).fill(1);
+
+function draw() {
+    ctx.fillStyle = "rgba(0,0,0,0.08)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#004d40";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random()*letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+setInterval(draw, 33);
+
+/* FLASH */
+function flash() {
+    const f = document.getElementById("flash");
+    f.classList.add("active");
+    setTimeout(() => f.classList.remove("active"), 200);
+}
+
+/* SHAKE */
+function shake(el) {
+    const parent = el.parentElement;
+    parent.classList.add("shake");
+    setTimeout(() => parent.classList.remove("shake"), 300);
+}
+
+/* SCREENS */
+const s1 = document.getElementById("screen1");
+const s2 = document.getElementById("screen2");
+const s3 = document.getElementById("screen3");
+
+/* PASSWORD 1 */
+document.getElementById("pass1").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        if (e.target.value === "Shiva") {
+            flash();
+            s1.classList.add("hidden");
+            s2.classList.remove("hidden");
+        } else shake(e.target);
+    }
+});
+
+/* PASSWORD 2 */
+document.getElementById("pass2").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        if (e.target.value === "Alix") {
+            flash();
+            s2.classList.add("hidden");
+            s3.classList.remove("hidden");
+        } else shake(e.target);
+    }
+});
+
+/* FINAL PASSWORD + DOWNLOAD + REDIRECT SCREEN */
+document.getElementById("pass3").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        if (e.target.value === "Happiness") {
+
+            flash();
+
+            // Download file
+            const content = "You unlocked the final file.\nAccess granted.";
+            const blob = new Blob([content], { type: "text/plain" });
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "unlocked.txt";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Final screen (Google Drive link)
+            setTimeout(() => {
+                document.body.innerHTML = "";
+                document.body.style.background = "#2b2b2b";
+                document.body.style.display = "flex";
+                document.body.style.justifyContent = "center";
+                document.body.style.alignItems = "center";
+
+                const box = document.createElement("div");
+                box.textContent = "https://drive.google.com/file/d/1BxwbvabuDiZ7VQlWaQS-i7mfCTF40IKt/view";
+
+                box.style.background = "white";
+                box.style.color = "black";
+                box.style.padding = "12px 16px";
+                box.style.fontFamily = "'Courier New', monospace";
+                box.style.fontSize = "0.95rem";
+                box.style.borderRadius = "4px";
+                box.style.boxShadow = "0 0 15px rgba(255,255,255,0.3)";
+
+                document.body.appendChild(box);
+
+            }, 400);
+
+        } else shake(e.target);
+    }
+});
+
+</script>
+
+</body>
+</html>
