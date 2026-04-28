@@ -106,14 +106,14 @@
 
 <!-- SCREEN 2 -->
 <div class="container hidden" id="screen2">
-    <div class="hint">Zkdw lv wkh qdph ri wkh jluo L wrrn lq?</div>
+    <div class="hint">w2==H2J</div>
     <div class="password-label">Password:</div>
     <input type="password" id="pass2">
 </div>
 
 <!-- SCREEN 3 -->
 <div class="container hidden" id="screen3">
-    <div class="hint">https://www.instagram.com/moomoofamm/</div>
+    <div class="hint">What did Prometheus steal from the gods?/</div>
     <div class="password-label">Password:</div>
     <input type="password" id="pass3">
 </div>
@@ -186,7 +186,7 @@ document.getElementById("pass1").addEventListener("keydown", e => {
 /* PASSWORD 2 */
 document.getElementById("pass2").addEventListener("keydown", e => {
     if (e.key === "Enter") {
-        if (e.target.value === "Alix") {
+        if (e.target.value === "Hallway") {
             flash();
             s2.classList.add("hidden");
             s3.classList.remove("hidden");
@@ -197,12 +197,12 @@ document.getElementById("pass2").addEventListener("keydown", e => {
 /* FINAL PASSWORD + DOWNLOAD + REDIRECT SCREEN */
 document.getElementById("pass3").addEventListener("keydown", e => {
     if (e.key === "Enter") {
-        if (e.target.value === "Happiness") {
+        if (e.target.value === "Fire") {
 
             flash();
 
             // Download file
-            const content = "You unlocked the final file.\nAccess granted.";
+            const content = "It was given to me in a dream.\nAccess granted.";
             const blob = new Blob([content], { type: "text/plain" });
 
             const link = document.createElement("a");
